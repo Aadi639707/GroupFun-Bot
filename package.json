@@ -1,0 +1,11 @@
+{
+  "name": "groupfun-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "grammy": "^1.39.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
