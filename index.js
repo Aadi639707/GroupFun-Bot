@@ -1,55 +1,75 @@
-import { Bot } from "grammy";
+const { Telegraf, Markup } = require("telegraf");
 
-const bot = new Bot(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const roasts = [
-  "You are proof that God has a sense of humor 😂",
-  "Even Google can't find your talent 🤡",
-  "You are not useless, you can always be a bad example 😆",
-  "If laziness was a sport, you’d win gold 🥇"
-];
+// /start
+bot.start(async (ctx) => {
+  const text =
+🔥 *Welcome to GroupFun Bot* 🔥
 
-function randomUser(ctx) {
-  const users = ctx.chat?.members || [];
-  return users[Math.floor(Math.random() * users.length)];
-}
+I bring *crazy fun* to Telegram groups 😈
 
-bot.command("start", ctx => {
-  ctx.reply(
-    "🔥 Welcome to *GroupFun Bot*\n\nI bring fun to your group with games:\n\n/roast\n/match\n/bomb\n/marry\n/truth\n/dare\n\nAdd me to a group and start playing 😈",
+🎮 Games:
+• /roast
+• /match
+• /bomb
+• /marry
+• /truth
+• /dare
+
+👇 Tap buttons below;
+
+  await ctx.replyWithMarkdown(
+    text,
+    Markup.inlineKeyboard([
+      [
+        Markup.button.callback("🎮 Games", "GAMES"),
+        Markup.button.callback("📖 Help", "HELP"),
+      ],
+      [
+        Markup.button.url("💬 Support", "https://t.me/SANATANI_GOJO"),
+      ],
+    ])
+  );
+});
+
+// Buttons
+bot.action("GAMES", async (ctx) => {
+  await ctx.editMessageText(
+🎮 *Games List*
+
+/roast 🔥
+/match ❤️
+/bomb 💣
+/marry 💍
+/truth 😳
+/dare 😈,
     { parse_mode: "Markdown" }
   );
 });
 
-bot.command("roast", ctx => {
-  const r = roasts[Math.floor(Math.random() * roasts.length)];
-  ctx.reply(r);
+bot.action("HELP", async (ctx) => {
+  await ctx.editMessageText(
+📖 *Help*
+
+✅ Add me to a group
+✅ Make me Admin (optional but best)
+✅ Use commands:
+
+/roast @user
+/match
+/bomb
+/truth
+/dare
+/marry
+
+Need help? Tap Support button.,
+    { parse_mode: "Markdown" }
+  );
 });
 
-bot.command("truth", ctx => {
-  ctx.reply("😏 Truth: Who in this group do you like the most?");
-});
+// /help command too
+bot.command("help", (ctx) => ctx.reply("Type /start and use buttons."));
 
-bot.command("dare", ctx => {
-  ctx.reply("🔥 Dare: Send your last emoji 5 times!");
-});
-
-bot.command("match", ctx => {
-  ctx.reply("💘 Match: Two people in this group are secretly in love 😏");
-});
-
-bot.command("marry", ctx => {
-  ctx.reply("💍 Wedding: A random couple got married in this group 😂");
-});
-
-bot.command("bomb", ctx => {
-  ctx.reply("💣 Bomb activated! Type PASS in 10 seconds or explode!");
-});
-
-bot.on("message:text", ctx => {
-  if (ctx.message.text.toLowerCase() === "pass") {
-    ctx.reply("😎 Bomb defused!");
-  }
-});
-
-bot.start();
+bot.launch();
+console.log("Bot running...");
