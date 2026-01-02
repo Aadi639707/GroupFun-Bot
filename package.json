@@ -1,11 +1,76 @@
-{
-  "name": "groupfun-bot",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "grammy": "^1.39.2"
+const TelegramBot = require("node-telegram-bot-api");
+const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+
+const keyboard = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: "🎮 Games", callback_data: "GAMES" },
+        { text: "📖 Help", callback_data: "HELP" }
+      ],
+      [
+        { text: "💬 Support", url: "https://t.me/YOUR_USERNAME" }
+      ]
+    ]
   },
-  "scripts": {
-    "start": "node index.js"
+  parse_mode: "Markdown"
+};
+
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+
+  const text =
+🔥 *Welcome to GroupFun Bot* 🔥
+
+I bring *crazy fun* to Telegram groups 😈
+
+🎮 Games:
+/roast 🔥
+/match ❤️
+/bomb 💣
+/marry 💍
+/truth 😳
+/dare 😈
+
+👇 Tap buttons below;
+
+  bot.sendMessage(chatId, text, keyboard);
+});
+
+bot.on("callback_query", (q) => {
+  const chatId = q.message.chat.id;
+
+  if (q.data === "GAMES") {
+    bot.editMessageText(
+🎮 *Games List*
+
+/roast 🔥
+/match ❤️
+/bomb 💣
+/marry 💍
+/truth 😳
+/dare 😈,
+      { chat_id: chatId, message_id: q.message.message_id, parse_mode: "Markdown" }
+    );
   }
-}
+
+  if (q.data === "HELP") {
+    bot.editMessageText(
+📖 *Help*
+
+✅ Add me to group
+✅ Make admin (optional)
+✅ Use commands:
+
+/roast @user
+/match
+/bomb
+/truth
+/dare
+/marry,
+      { chat_id: chatId, message_id: q.message.message_id, parse_mode: "Markdown" }
+    );
+  }
+
+  bot.answerCallbackQuery(q.id);
+});
